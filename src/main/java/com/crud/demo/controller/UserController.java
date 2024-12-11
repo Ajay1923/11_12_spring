@@ -114,29 +114,41 @@ public class UserController {
                user.getPassword() == null || user.getPassword().isEmpty();
     }
 
-    private String updateUser(User user, RedirectAttributes redirectAttributes) {
-            Optional<User> userOptional = userRepository.findById(user.getId());
-            if (userOptional.isPresent()) {
-                User existingUser = userOptional.get();
-                existingUser.setFirstName(user.getFirstName());
-                existingUser.setMiddleName(user.getMiddleName());
-                existingUser.setLastName(user.getLastName());
-                existingUser.setDateOfBirth(user.getDateOfBirth());
-                existingUser.setGender(user.getGender());
-                existingUser.setEmail(user.getEmail());
-                existingUser.setMobileNumber(user.getMobileNumber());
-                existingUser.setAccess(user.getAccess());
-                existingUser.setUsername(user.getUsername());
-                existingUser.setPassword(user.getPassword());
+      private String updateUser(User user, RedirectAttributes redirectAttributes) {
+        Optional<User> userOptional = userRepository.findById(user.getId());
+        
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
 
-                userRepository.save(existingUser);
-                redirectAttributes.addFlashAttribute("message", "User details updated successfully!");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "User not found.");
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setMiddleName(user.getMiddleName());
+            existingUser.setLastName(user.getLastName());
+            existingUser.setDateOfBirth(user.getDateOfBirth());
+            existingUser.setGender(user.getGender());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setMobileNumber(user.getMobileNumber());
+
+            if (user.getAccess() != null && !user.getAccess().isEmpty()) {
+                existingUser.setAccess(user.getAccess());
             }
 
-            return "redirect:/settings"; 
+            if (user.getUsername() != null && !user.getUsername().isEmpty()) {
+                existingUser.setUsername(user.getUsername());
+            }
+
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(user.getPassword());
+            }
+
+            userRepository.save(existingUser);
+            redirectAttributes.addFlashAttribute("message", "User details updated successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "User not found.");
         }
+
+        return "redirect:/settings";
+    }
+
 
 
 
